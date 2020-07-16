@@ -3,6 +3,8 @@ require "sider/types/base"
 
 module Sider
   class Error < StandardError; end
+  class MissingKeys < ArgumentError; end
+  class UnexpectedKeys < ArgumentError; end
 
   class Configuration
     attr_accessor :redis_client
