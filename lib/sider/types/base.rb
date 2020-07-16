@@ -22,7 +22,8 @@ module Sider
       def define_redis_method(method_name)
         define_method method_name do |*args|
           redis_args = [key].concat(args)
-          puts(method_name, *redis_args)
+          # forward key and args to corresponding redis method
+          redis_client.send(method_name, *redis_args)
         end
       end
 
