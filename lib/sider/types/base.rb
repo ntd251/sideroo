@@ -58,6 +58,10 @@ module Sider
         where({})
       end
 
+      def example_valid?
+        example.nil? || example =~ key_regex
+      end
+
       private
 
       def define_redis_method(method_name)

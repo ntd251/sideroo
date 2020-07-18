@@ -12,6 +12,7 @@ module Sider
       srandmember
       srem
       sscan
+      sscan_each
       sunion
     ]
   end

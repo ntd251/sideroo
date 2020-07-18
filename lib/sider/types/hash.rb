@@ -12,9 +12,12 @@ module Sider
       hmget
       hmset
       hscan
+      hscan_each
       hset
       hsetnx
       hvals
+      mapped_hmget
+      mapped_hmset
     ]
   end
 end

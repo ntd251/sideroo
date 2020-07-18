@@ -6,18 +6,21 @@ module Sider
       zcount
       zincrby
       zlexcount
+      zpopmax
+      zpopmin
       zrange
       zrangebylex
       zrangebyscore
       zrank
       zrem
-      zremrangebylex
       zremrangebyrank
       zremrangebyscore
       zrevrange
+      zrevrangebylex
       zrevrangebyscore
       zrevrank
       zscan
+      zscan_each
       zscore
     ]
 
