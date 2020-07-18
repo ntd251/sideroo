@@ -52,7 +52,7 @@ end
 # 1-dimension cache key
 class CountryPolicyCache < Sider::String
   key_pattern 'policy:{country}' # REQUIRED
-  key_regex /^page\:\w{2}$/ # Optional. To resolve key conflicts with other usages if any.
+  key_regex /^page\:(\w{2})$/ # Optional. To resolve key conflicts with other usages if any.
   description 'Cache Policy page per country'
 end
 
@@ -72,8 +72,7 @@ end
 ```rb
 class CountryPageCache < Sider::String
   key_pattern 'page:{country}'
-  key_regex /^page\:\w{2}$/ # Optional. For
-  key_pattern 'page:{country}'
+  key_regex /^page\:(\w{2})$/
 end
 
 # The key-value params are auto detected
@@ -199,7 +198,7 @@ e.g.`ucg:{country}:{gender}` vs. `u:{user_id}`.
 ```rb
 class TopCountryGenderUsersCache < Sider::Set
   key_pattern 'users:{country}:{gender}'
-  key_regex /^users\:[a-z]{2}\:[mf]$/
+  key_regex /^users\:([a-z]{2})\:([mf])$/
   example 'users:sg:m'
   description 'Top users per country per gender'
 end
