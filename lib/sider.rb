@@ -1,4 +1,6 @@
 require "sider/version"
+require "sider/enumerator"
+require "sider/key_builder"
 require "sider/types/base"
 require "sider/types/string"
 
