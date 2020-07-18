@@ -26,7 +26,6 @@ Or install it yourself as:
 
     $ gem install sider
 
----
 
 ## 3. Usage
 
@@ -212,10 +211,6 @@ end
 
 
 ```
-
-
-
-
 
 ## 6. Development
 

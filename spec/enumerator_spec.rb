@@ -1,8 +1,4 @@
 RSpec.describe Sider::Enumerator do
-  let(:limit) { 100 }
-
-  let(:key_regex) { nil }
-
   let(:record_klass_with_default_regex) do
     Class.new(Sider::String) do
       key_pattern 'name:{language}:{order}'
@@ -21,7 +17,6 @@ RSpec.describe Sider::Enumerator do
   let(:enumerator) do
     Sider::Enumerator.new(
       type_klass: record_klass,
-      limit: limit,
       filters: { language: 'en' },
     )
   end

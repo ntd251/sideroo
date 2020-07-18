@@ -58,15 +58,6 @@ module Sider
         where({})
       end
 
-      def build(attr_map)
-        key = KeyBuilder.new(
-          attr_map: attr_map,
-          key_pattern: key_pattern,
-        ).build
-
-        new(key)
-      end
-
       private
 
       def define_redis_method(method_name)
@@ -82,7 +73,7 @@ module Sider
 
         key_attributes.each do |attr|
           term = "{#{attr}}"
-          value = '.+'
+          value = '(.+)'
           regex_str = regex_str.gsub(term, value)
         end
 
@@ -112,8 +103,21 @@ module Sider
 
     attr_reader :key
 
-    def initialize(key)
-      @key = key
+    def initialize(arg)
+      @key =
+        case arg
+        when ::String
+          arg
+        when ::Hash
+          attr_map = arg
+          KeyBuilder.new(
+            attr_map: attr_map,
+            key_pattern: self.class.key_pattern,
+          ).build
+        else
+          message = "Hash or String expected. #{arg.class} given."
+          raise ArgumentError, message
+        end
     end
 
     def redis_client=(client)
