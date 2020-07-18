@@ -21,4 +21,37 @@ RSpec.describe Sider::String do
       expect { subject }.not_to raise_error
     end
   end
+
+  describe '.all' do
+    subject { MockedString.all }
+
+    before do
+      matched_keys = [
+        'name:en:1',
+        'name:fr:10',
+      ]
+
+      matched_keys.each do |key|
+        Sider.redis_client.set(key, 'john')
+      end
+
+      unmatched_keys = [
+        'random_key',
+        'my_key:fr:10',
+      ]
+
+      unmatched_keys.each do |key|
+        Sider.redis_client.set(key, 'john')
+      end
+    end
+
+    it 'returns correct objects' do
+      output = subject.map(&:key).sort
+
+      expect(output).to eq [
+        'name:en:1',
+        'name:fr:10'
+      ]
+    end
+  end
 end
