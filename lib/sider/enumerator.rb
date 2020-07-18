@@ -38,7 +38,7 @@ module Sider
     def map
       output = []
       each do |obj|
-        output.push(obj)
+        output.push yield(obj)
       end
       output
     end
