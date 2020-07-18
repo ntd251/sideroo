@@ -90,13 +90,33 @@ module Sider
       end
     end
 
+    # Methods applied to all types
+    redis_methods %w[
+      del
+      dump
+      exists
+      expire
+      expireat
+      persist
+      pexpire
+      pexpireat
+      pttl
+      rename
+      renamenx
+      restore
+      touch
+      ttl
+      type
+      unlink
+    ]
+
     attr_reader :key
 
     def initialize(key)
       @key = key
     end
 
-    def use_client(client)
+    def redis_client=(client)
       @redis_client = client
     end
 
