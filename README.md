@@ -29,6 +29,14 @@ Or install it yourself as:
 
 ## 3. Usage
 
+### 3.0. Configurations - REQUIRED
+
+```rb
+Sider.configure do |c|
+  c.redis_client = Redis.new
+end
+```
+
 ### 3.1. Define a Redis usage
 
 Each Redis usages usually
