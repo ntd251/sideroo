@@ -107,6 +107,7 @@ module Sider
       @key =
         case arg
         when ::String
+          raise(ArgumentError, 'Invalid key') if arg !~ self.class.key_regex
           arg
         when ::Hash
           attr_map = arg
