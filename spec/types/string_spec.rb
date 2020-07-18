@@ -4,7 +4,7 @@ RSpec.describe Sider::String do
     description 'This is mocked string'
   end
 
-  let(:mocked_string) { MockedString.build(language: 'en', order: 10) }
+  let(:mocked_string) { MockedString.new(language: 'en', order: 10) }
 
   describe '#get' do
     subject { mocked_string.get }
