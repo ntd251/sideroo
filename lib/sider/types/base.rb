@@ -54,6 +54,10 @@ module Sider
         )
       end
 
+      def all
+        where({})
+      end
+
       def build(attr_map)
         key = KeyBuilder.new(
           attr_map: attr_map,
