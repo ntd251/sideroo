@@ -1,5 +1,5 @@
 module Sider
-  class Set < Redis
+  class Set < Base
     redis_methods %w[
       sadd
       scard

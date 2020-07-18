@@ -1,5 +1,5 @@
 module Sider
-  class SortedSet
+  class SortedSet < Base
     redis_methods %w[
       zadd
       zcard

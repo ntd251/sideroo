@@ -1,5 +1,5 @@
 module Sider
-  class HyperLogLog
+  class HyperLogLog < Base
     redis_methods %w[
       pfadd
       pfcount

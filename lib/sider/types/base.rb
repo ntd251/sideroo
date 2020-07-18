@@ -107,11 +107,12 @@ module Sider
 
     attr_reader :key
 
-    def initialize(arg)
+    def initialize(arg = {})
       @key =
         case arg
         when ::String
-          raise(ArgumentError, 'Invalid key') if arg !~ self.class.key_regex
+          message = "Expected pattern #{self.class.key_pattern}, got #{arg}"
+          raise(ArgumentError, message) if arg !~ self.class.key_regex
           arg
         when ::Hash
           attr_map = arg

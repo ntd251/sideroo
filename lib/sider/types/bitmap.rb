@@ -1,5 +1,5 @@
 module Sider
-  class Bitmap
+  class Bitmap < Base
     redis_methods %w[
       getbit
       setbit

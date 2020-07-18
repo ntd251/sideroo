@@ -2,6 +2,12 @@ require "sider/version"
 require "sider/enumerator"
 require "sider/key_builder"
 require "sider/types/base"
+require "sider/types/bitmap"
+require "sider/types/hash"
+require "sider/types/hyper_log_log"
+require "sider/types/list"
+require "sider/types/set"
+require "sider/types/sorted_set"
 require "sider/types/string"
 
 module Sider
