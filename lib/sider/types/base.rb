@@ -8,13 +8,20 @@ module Sider
       end
 
       def key_pattern(*args)
-        return @key_pattern if args.count.zero?
-        set_key_pattern(*args)
+        @key_pattern ||= args.first
+      end
+
+      def key_attributes
+        regex = /\{([^\{\}]+)\}/
+        key_pattern.scan(regex).map(&:first)
       end
 
       def redis_client(*args)
-        return set_redis_client(*args) unless args.count.zero?
-        @redis_client || Sider.redis_client
+        @redis_client ||= args.first || Sider.redis_client
+      end
+
+      def description(*args)
+        @description ||= args.first
       end
 
       private
@@ -26,19 +33,12 @@ module Sider
           redis_client.send(method_name, *redis_args)
         end
       end
-
-      def set_key_pattern(pattern)
-        @key_pattern = pattern
-      end
-
-      def set_redis_client(client)
-        @redis_client = client
-      end
     end
 
     attr_reader :key
 
     def initialize(attr_map = {})
+      validate_attrs!(attr_map)
       @key = populate_key(attr_map)
     end
 
@@ -52,27 +52,26 @@ module Sider
 
     private
 
-    def populate_key(attr_map)
-      key_pattern = self.class.key_pattern
+    def validate_attrs!(attr_map)
+      key_attributes = self.class.key_attributes
+      provided_attrs = attr_map.keys.map(&:to_s)
 
-      regex = /\{([^\{\}]+)\}/
-      keys = key_pattern.scan(regex).map(&:first)
-      provided_keys = attr_map.keys.map(&:to_s)
+      missing_attrs = key_attributes - provided_attrs
+      unexpected_attrs = provided_attrs - key_attributes
 
-      missing_keys = keys - provided_keys
-      unexpected_keys = provided_keys - keys
-
-      if missing_keys.any?
-        msg = "Missing keys: #{missing_keys.join(', ')}"
+      if missing_attrs.any?
+        msg = "Missing attributes: #{missing_attrs.join(', ')}"
         raise MissingKeys, msg
       end
 
-      if unexpected_keys.any?
-        msg = "Unexpected keys: #{unexpected_keys.join(', ')}"
+      if unexpected_attrs.any?
+        msg = "Unexpected attributes: #{unexpected_attrs.join(', ')}"
         raise UnexpectedKeys, msg
       end
+    end
 
-      key = key_pattern
+    def populate_key(attr_map)
+      key = self.class.key_pattern
       attr_map.each do |attr, value|
         term = "{#{attr}}"
         key = key.gsub(term, value.to_s)

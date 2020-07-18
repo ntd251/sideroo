@@ -1,5 +1,6 @@
 require "sider/version"
 require "sider/types/base"
+require "sider/types/string"
 
 module Sider
   class Error < StandardError; end
