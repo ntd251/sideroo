@@ -3,12 +3,11 @@
 ## 1. Motivations
 
 This gem is aimed to provide
-- a more declarative and auditable approach when working with Redis.
-- self-generated documentation for your Redis usages
-- object-oriented methods for each Redis data type
+- a **declarative** and **auditable** approach when working with Redis
+- **self-generated documentation** for your Redis usages
+- **object-oriented** methods for each Redis data type
 
-while
-- maintaining thin abstraction on top of `redis` gem.
+while maintaining a **thin** abstraction on top of `redis` gem.
 
 ## 2. Installation
 
@@ -37,6 +36,33 @@ Sider.configure do |c|
 end
 ```
 
+Sider provides a thin OOP abstraction on top of `redis-rb`. Therefore, it's recommended to use `redis-rb` (with / without `redis-namespace`). Any Redis clients with the same interfaces are fine too.
+
+Most of the usage are just to abstract the `key` argument into the internal state of the obj.
+
+#### Examples
+
+For Redis `Set`
+
+```rb
+# in Redis
+key = "namespace:#{dimension_1}:#{dimension_2}"
+redis_client.scard(key)
+redis_client.sadd(key, member)
+
+# in Sider
+class MySet < Sider::Set
+  key_pattern 'namespace:{dimension_1}:{dimension_2}'
+end
+
+sider_set = MySet.new(
+  dimension_1: value_1,
+  dimension_2: value_2,
+)
+sider_set.scard
+sider_set.sadd(member)
+```
+
 ### 3.1. Define a Redis usage
 
 Each Redis usages usually
@@ -45,8 +71,45 @@ Each Redis usages usually
 
 `Sider` provides what you need and more.
 
-When there are dynamic components inside the key pattern, e.g. `top_stories:{country}:{category}`,
-the constructor would detect and require `country` and `category` during initialization.
+There are some configurations you can specify for each use-cases.
+
+#### `key_pattern` - String - required
+
+Pattern used by the use-case
+
+```rb
+key_pattern 'top_stories:{country}:{category}'
+```
+
+#### `key_regex` - Regexp - optional
+
+Regex for better pattern matching for search. See more in Section 5.
+
+Can be 100% optional if key namespacing is done well.
+
+```rb
+key_regex /^top_stories\:(\w{2})\:([^\:]+)$/
+```
+
+#### `description` - String - optional
+
+Provide description to the use-cases.
+
+```rb
+description 'Cache top stories per country and category'
+```
+
+#### `example` - String - optional
+
+Example of actual Redis keys would be used. If specified, you can utilize `example_valid?` check to validate `key_regex` in your specs.
+
+```rb
+example 'top_stories:us:romance'
+```
+
+#### Dynamic initalization
+
+When there are dynamic components inside the key pattern, e.g. `top_stories:{country}:{category}`, the constructor would detect and require `country` and `category` during initialization.
 
 
 ```rb
@@ -72,9 +135,14 @@ class TopStoriesCache < Sider::List
   key_pattern 'top_stories:{country}:{category}'
   description 'Cache top stories by ID per country and category'
 end
+
+TopStoriesCache.new # MissingKeys: Missing country, category
+TopStoriesCache.new(country: 'us') # MissingKeys: Missing category
+TopStoriesCache.new(country: 'us', category: 'romance') # GOOD
+TopStoriesCache.new(country: 'us', cateogry: 'romance', random_key: 'random_value') # UnexpectedKeys: Unexpected keys random_key
 ```
 
-### 3.2. Dynamic initialization
+### 3.2. Object-oriented methods for each data type
 
 ```rb
 class CountryPageCache < Sider::String
@@ -424,12 +492,17 @@ end
 ## 6. Redis Clients
 
 Redis clients can be customized at 3 levels
+- Global
+- Class
+- Instance
+
+The lower level would inherit the config from parent level if a custom Redis client is not specified.
 
 ### 6.1. Global `Sider` config
 
 ```rb
 Sider.configure do |c|
-  c.redis_client = ...
+  c.redis_client = global_redis_client
 end
 ```
 
@@ -438,7 +511,7 @@ end
 ```rb
 class UserStoriesCache < Sider::Set
   # ...
-  redis_client custom_redis_client
+  redis_client class_redis_client
 end
 ```
 
@@ -446,7 +519,7 @@ end
 
 ```rb
 cache = UserStoriesCache.new(...)
-cache.user(instance_redis_client)
+cache.use_client(instance_redis_client)
 ```
 
 
