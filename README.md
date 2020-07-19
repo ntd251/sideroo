@@ -30,9 +30,9 @@ This gem is aimed to provide
   ```
 - an **auditable** Redis key management
   ```rb
-  TopStoriesCache.count # key count - COMING SOON
+  TopStoriesCache.count # key count
   TopStoriesCache.all.map(&:key) # list all keys
-  TopStoriesCache.flush # delete all keys of the same pattern - COMING SOON
+  TopStoriesCache.flush # delete all keys of the same pattern
 
   # Support `where` for key searching
   # `each`, `map` for enumerable
@@ -257,7 +257,7 @@ TopStoriesCache.count # Scan and count
 TopStoriesCache.all.to_a # NOT RECOMMENDED if there are too many keys
 ```
 
-### 3.6. Flush keys - COMING SOON
+### 3.6. Flush keys
 
 ```rb
 TopStoriesCache.flush # Delete all keys of TopStoriesCache
