@@ -1,4 +1,4 @@
-module Sider
+module Sideroo
   class Set < Base
     redis_methods %w[
       sadd

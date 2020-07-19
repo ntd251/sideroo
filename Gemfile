@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-# Specify your gem's dependencies in sider.gemspec
+# Specify your gem's dependencies in sideroo.gemspec
 gemspec
 
 gem "rake", "~> 12.0"

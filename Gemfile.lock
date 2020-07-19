@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    sider (0.2.0)
+    sideroo (1.0.0)
 
 GEM
   remote: https://rubygems.org/
@@ -33,7 +33,7 @@ DEPENDENCIES
   redis (~> 3.3)
   redis-namespace (~> 1.6)
   rspec (~> 3.0)
-  sider!
+  sideroo!
 
 BUNDLED WITH
    2.1.4

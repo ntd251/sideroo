@@ -1,22 +1,24 @@
-require_relative 'lib/sider/version'
+require_relative 'lib/sideroo/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "sider"
-  spec.version       = Sider::VERSION
+  spec.name          = "sideroo"
+  spec.version       = Sideroo::VERSION
   spec.authors       = ["Duong Nguyen"]
   spec.email         = ["ntd251@users.noreply.github.com"]
 
-  spec.summary       = %q{Provide an object oriented abstraction for Redis}
-  spec.description   = %q{Provide an object oriented abstraction for Redis}
-  spec.homepage      = "https://github.com/ntd251/sider"
+  spec.summary       = %q{Declarative and auditable object-oriented library for Redis}
+  spec.description   = %q{
+    Provide a declarative Redis key definition, intuitive key initialization, object-oriented methods for Redis data type, and auditable Redis key management.
+  }
+  spec.homepage      = "https://github.com/ntd251/sideroo"
   spec.license       = "MIT"
   spec.required_ruby_version = Gem::Requirement.new(">= 2.0.0")
 
   spec.metadata["allowed_push_host"] = "https://rubygems.org/"
 
   spec.metadata["homepage_uri"] = spec.homepage
-  spec.metadata["source_code_uri"] = "https://github.com/ntd251/sider"
-  spec.metadata["changelog_uri"] = "https://github.com/ntd251/sider"
+  spec.metadata["source_code_uri"] = "https://github.com/ntd251/sideroo"
+  spec.metadata["changelog_uri"] = "https://github.com/ntd251/sideroo"
 
   # Specify which files should be added to the gem when it is released.
   # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
