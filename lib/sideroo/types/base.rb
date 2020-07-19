@@ -58,6 +58,14 @@ module Sideroo
         where({})
       end
 
+      def count
+        all.count
+      end
+
+      def flush
+        all.each(&:del)
+      end
+
       def example_valid?
         example.nil? || example =~ key_regex
       end
