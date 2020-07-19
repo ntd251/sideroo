@@ -7,21 +7,25 @@ RSpec.describe Sideroo::Base do
 
   let(:cache) { BaseCache.new(language: 'en', order: 10) }
 
-  before do
-    matched_keys = [
-      'name:en:1',
-      'name:fr:10',
-    ]
-
-    matched_keys.each do |key|
-      Sideroo.redis_client.set(key, 'john')
-    end
-
-    unmatched_keys = [
+  let(:unmatched_keys) do
+    [
       'random_key',
       'my_key:fr:10',
       'my_another_key:us:12',
     ]
+  end
+
+  let(:matched_keys) do
+    [
+      'name:en:1',
+      'name:fr:10',
+    ]
+  end
+
+  before do
+    matched_keys.each do |key|
+      Sideroo.redis_client.set(key, 'john')
+    end
 
     unmatched_keys.each do |key|
       Sideroo.redis_client.set(key, 'john')
@@ -34,10 +38,7 @@ RSpec.describe Sideroo::Base do
     it 'returns correct objects' do
       output = subject.map(&:key).sort
 
-      expect(output).to eq [
-        'name:en:1',
-        'name:fr:10'
-      ]
+      expect(output).to eq matched_keys.sort
     end
   end
 
@@ -45,7 +46,7 @@ RSpec.describe Sideroo::Base do
     subject { BaseCache.count }
 
     it 'returns the correct count' do
-      expect(subject).to eq 2
+      expect(subject).to eq matched_keys.count
     end
   end
 
@@ -55,7 +56,16 @@ RSpec.describe Sideroo::Base do
     it 'delete all correct keys' do
       expect { subject }
         .to change { BaseCache.count }
-        .from(2).to(0)
+        .from(matched_keys.count).to(0)
+    end
+
+    it 'does not delete unmatched keys' do
+      subject
+
+      unmatched_keys.each do |key|
+        redis = Sideroo.redis_client
+        expect(redis.exists(key)).to be_truthy
+      end
     end
   end
 end
