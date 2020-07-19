@@ -20,6 +20,16 @@ module Sideroo
       cursor = nil
       count = 0
 
+      each_key do |key|
+        item = type_klass.new(key)
+        yield(item)
+      end
+    end
+
+    def each_key
+      cursor = nil
+      count = 0
+
       until cursor.to_s == '0'
         cursor ||= 0
         cursor, keys = redis_client.scan(cursor, match: search_pattern)
@@ -29,8 +39,7 @@ module Sideroo
           next unless regex_matched?(key)
 
           count += 1
-          item = type_klass.new(key)
-          yield(item)
+          yield(key)
         end
       end
     end
@@ -45,7 +54,7 @@ module Sideroo
 
     def count
       count = 0
-      each { count += 1 }
+      each_key { count += 1 }
       count
     end
 
