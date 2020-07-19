@@ -1,4 +1,4 @@
-module Sider
+module Sideroo
   class List < Base
     redis_methods %w[
       blpop

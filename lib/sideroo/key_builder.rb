@@ -1,4 +1,4 @@
-module Sider
+module Sideroo
   class KeyBuilder
     attr_reader :attr_map
     attr_reader :key_pattern

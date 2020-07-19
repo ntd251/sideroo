@@ -1,12 +1,12 @@
-RSpec.describe Sider::Enumerator do
+RSpec.describe Sideroo::Enumerator do
   let(:record_klass_with_default_regex) do
-    Class.new(Sider::String) do
+    Class.new(Sideroo::String) do
       key_pattern 'name:{language}:{order}'
     end
   end
 
   let(:record_klass_with_custom_regex) do
-    Class.new(Sider::String) do
+    Class.new(Sideroo::String) do
       key_pattern 'name:{language}:{order}'
       key_regex /^name\:[^:]+\:[^:]+$/
     end
@@ -15,14 +15,14 @@ RSpec.describe Sider::Enumerator do
   let(:record_klass) { record_klass_with_default_regex }
 
   let(:enumerator) do
-    Sider::Enumerator.new(
+    Sideroo::Enumerator.new(
       type_klass: record_klass,
       filters: { language: 'en' },
     )
   end
 
   before do
-    redis = Sider.redis_client
+    redis = Sideroo.redis_client
 
     # always counted
     10.times.each do |index|

@@ -1,11 +1,15 @@
-# Sider
+# Sideroo
+
+> Declarative and auditable object-oriented library for Redis
+
+`Sideroo` is `Object Oriented Redis` (`ooredis`) spelled backward.
 
 ## 1. Motivations
 
 This gem is aimed to provide
 - a **declarative** Redis key definition
   ```rb
-  class TopStoriesCache < Sider::Set
+  class TopStoriesCache < Sideroo::Set
     key_pattern 'top_stories:{country}:{category}'
     description 'Cache top stories by ID per country and category'
     example 'top_stories:us:romance'
@@ -38,7 +42,7 @@ This gem is aimed to provide
   ```
 - Potential **self-generated documentation** for Redis usage
   ```rb
-  Sider.report # COMING SOON
+  Sideroo.report # COMING SOON
   ```
 
 All of these are done while maintaining a **thin** abstraction on top of `redis` gem.
@@ -48,7 +52,7 @@ All of these are done while maintaining a **thin** abstraction on top of `redis`
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'sider'
+gem 'sideroo'
 ```
 
 And then execute:
@@ -57,7 +61,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install sider
+    $ gem install sideroo
 
 
 ## 3. Usage
@@ -65,12 +69,12 @@ Or install it yourself as:
 ### 3.0. Configurations - REQUIRED
 
 ```rb
-Sider.configure do |c|
+Sideroo.configure do |c|
   c.redis_client = Redis.new
 end
 ```
 
-Sider provides a thin OOP abstraction on top of `redis-rb`. Therefore, it's recommended to use `redis-rb` (with / without `redis-namespace`). Any Redis clients with the same interfaces are fine too.
+Sideroo provides a thin OOP abstraction on top of `redis-rb`. Therefore, it's recommended to use `redis-rb` (with / without `redis-namespace`). Any Redis clients with the same interfaces are fine too.
 
 Most of the usage are just to abstract the `key` argument into the internal state of the obj.
 
@@ -84,17 +88,17 @@ key = "namespace:#{dimension_1}:#{dimension_2}"
 redis_client.scard(key)
 redis_client.sadd(key, member)
 
-# in Sider
-class MySet < Sider::Set
+# in Sideroo
+class MySet < Sideroo::Set
   key_pattern 'namespace:{dimension_1}:{dimension_2}'
 end
 
-sider_set = MySet.new(
+sideroo_set = MySet.new(
   dimension_1: value_1,
   dimension_2: value_2,
 )
-sider_set.scard
-sider_set.sadd(member)
+sideroo_set.scard
+sideroo_set.sadd(member)
 ```
 
 ### 3.1. Define a Redis usage
@@ -103,7 +107,7 @@ Each Redis usages usually
 - have a key pattern
 - use a certain Redis data type
 
-`Sider` provides what you need and more.
+`Sideroo` provides what you need and more.
 
 There are some configurations you can specify for each use-cases.
 
@@ -148,13 +152,13 @@ When there are dynamic components inside the key pattern, e.g. `top_stories:{cou
 
 ```rb
 # Static cache key
-class TopUserCache < Sider::List
+class TopUserCache < Sideroo::List
   key_pattern 'top_users' # REQUIRED
   description 'Cache 50 top users worldwide'
 end
 
 # 1-dimension cache key
-class CountryPolicyCache < Sider::String
+class CountryPolicyCache < Sideroo::String
   key_pattern 'policy:{country}' # REQUIRED
   key_regex /^page\:(\w{2})$/ # Optional. To resolve key conflicts with other usages if any.
   description 'Cache Policy page per country'
@@ -165,7 +169,7 @@ CountryPolicyCache.new(country: 'us') # Good
 CountryPolicyCache.new(gender: 'us') # UnexpectedKeys: Unexpected keys gender
 
 # 2-dimension cache key
-class TopStoriesCache < Sider::List
+class TopStoriesCache < Sideroo::List
   key_pattern 'top_stories:{country}:{category}'
   description 'Cache top stories by ID per country and category'
 end
@@ -179,7 +183,7 @@ TopStoriesCache.new(country: 'us', cateogry: 'romance', random_key: 'random_valu
 ### 3.2. Object-oriented methods for each data type
 
 ```rb
-class CountryPageCache < Sider::String
+class CountryPageCache < Sideroo::String
   key_pattern 'page:{country}'
   key_regex /^page\:(\w{2})$/
 end
@@ -188,7 +192,7 @@ end
 page_cache = CountryPageCache.new(country: country)
 page_cache.get
 
-class TopStoriesCache < Sider::List
+class TopStoriesCache < Sideroo::List
   key_pattern 'top_stories:{country}:{category}'
   description 'Cache top stories by ID per country and category'
 end
@@ -202,7 +206,7 @@ cache.set(story_id) # NoMethodError - since `set` is not a method of List type
 ### 3.3. Search and Enumerable
 
 ```rb
-class TopStoriesCache < Sider::Set
+class TopStoriesCache < Sideroo::Set
   key_pattern 'top_stories:{country}:{category}'
   description 'Cache top stories by ID per country and category'
 end
@@ -238,7 +242,7 @@ TopStoriesCache.where(country: 'sg').count
 ### 3.4. Report & Generate documentation - COMING SOON
 
 ```rb
-Sider.report
+Sideroo.report
 ```
 
 ```
@@ -263,14 +267,14 @@ TopStoriesCache.flush # Delete all keys of TopStoriesCache
 
 ## 4. Data Types
 
-`Sider` provides support for 7 main Redis data types.
+`Sideroo` provides support for 7 main Redis data types.
 
 All `key`-related Redis methods are supported by all below types.
 
 ### KEY-related methods
 
 ```rb
-class AnyRecord < Sider::Base
+class AnyRecord < Sideroo::Base
   # ...
 end
 
@@ -294,12 +298,12 @@ record.type
 record.unlink
 ```
 
-### 4.1. `Sider::String`
+### 4.1. `Sideroo::String`
 
 Support all KEY-related methods and its own methods.
 
 ```rb
-class MyStringCache < Sider::String
+class MyStringCache < Sideroo::String
   # ...
 end
 
@@ -324,12 +328,12 @@ string.setrange(offset, value)
 string.strlen
 ```
 
-### 4.2. `Sider::Hash`
+### 4.2. `Sideroo::Hash`
 
 Support all KEY-related methods and its own methods.
 
 ```rb
-class MyHash < Sider::Hash
+class MyHash < Sideroo::Hash
   # ...
 end
 
@@ -354,12 +358,12 @@ hash.mapped_hmget(*field)
 hash.mapped_hmset(hash)
 ```
 
-### 4.3. `Sider::List`
+### 4.3. `Sideroo::List`
 
 Support all KEY-related methods and its own methods.
 
 ```rb
-class MyList < Sider::List
+class MyList < Sideroo::List
   # ...
 end
 
@@ -384,12 +388,12 @@ list.rpush(value) # => Fixnum
 list.rpushx(value) # => Fixnum
 ```
 
-### 4.4. `Sider::Set`
+### 4.4. `Sideroo::Set`
 
 Support all KEY-related methods and its own methods.
 
 ```rb
-class SiteSet < Sider::Set
+class SiteSet < Sideroo::Set
   # ...
 end
 
@@ -416,12 +420,12 @@ set.sunionstore(destination, *other_keys)
 set.sunionstore!(*other_keys)
 ```
 
-### 4.5. `Sider::SortedSet`
+### 4.5. `Sideroo::SortedSet`
 
 Support all KEY-related methods and its own methods.
 
 ```rb
-class MySortedSet < Sider::SortedSet
+class MySortedSet < Sideroo::SortedSet
   # ...
 end
 
@@ -454,12 +458,12 @@ sorted_set.zunionstore(destination, *other_keys)
 sorted_set.zunionstore!(*other_keys)
 ```
 
-### 4.6. `Sider::Bitmap`
+### 4.6. `Sideroo::Bitmap`
 
 Support all KEY-related methods and its own methods.
 
 ```rb
-class MyBitmap < Sider::Bitmap
+class MyBitmap < Sideroo::Bitmap
   # ...
 end
 
@@ -469,12 +473,12 @@ bitmap.getbit(offset)
 bitmap.setbit(offset, value)
 ```
 
-### 4.7. `Sider::HyperLogLog`
+### 4.7. `Sideroo::HyperLogLog`
 
 Support all KEY-related methods and its own methods.
 
 ```rb
-class MyHLL < Sider::HyperLogLog
+class MyHLL < Sideroo::HyperLogLog
   # ...
 end
 
@@ -511,17 +515,17 @@ The second pattern does cover the data set of the first pattern. This could be a
 
 e.g.`ucg:{country}:{gender}` vs. `u:{user_id}`.
 
-`Sider` also provides an additional matching options called `key_regex` for each `class`. This would allow deeper key selection.
+`Sideroo` also provides an additional matching options called `key_regex` for each `class`. This would allow deeper key selection.
 
 ```rb
-class TopCountryGenderUsersCache < Sider::Set
+class TopCountryGenderUsersCache < Sideroo::Set
   key_pattern 'users:{country}:{gender}'
   key_regex /^users\:([a-z]{2})\:([mf])$/
   example 'users:sg:m'
   description 'Top users per country per gender'
 end
 
-class UserStoriesCache < Sider::Set
+class UserStoriesCache < Sideroo::Set
   key_pattern 'users:{user_id}'
   key_regex /^users\:\d+$/
   example 'users:12345'
@@ -538,10 +542,10 @@ Redis clients can be customized at 3 levels
 
 The lower level would inherit the config from parent level if a custom Redis client is not specified.
 
-### 6.1. Global `Sider` config
+### 6.1. Global `Sideroo` config
 
 ```rb
-Sider.configure do |c|
+Sideroo.configure do |c|
   c.redis_client = global_redis_client
 end
 ```
@@ -549,7 +553,7 @@ end
 ### 6.2. Class level config
 
 ```rb
-class UserStoriesCache < Sider::Set
+class UserStoriesCache < Sideroo::Set
   # ...
   redis_client class_redis_client
 end
@@ -571,7 +575,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## 8. Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/sider. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/[USERNAME]/sider/blob/master/CODE_OF_CONDUCT.md).
+Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/sideroo. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/[USERNAME]/sideroo/blob/master/CODE_OF_CONDUCT.md).
 
 
 ## 9. License
@@ -580,4 +584,4 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## 10. Code of Conduct
 
-Everyone interacting in the Sider project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/sider/blob/master/CODE_OF_CONDUCT.md).
+Everyone interacting in the Sideroo project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/sideroo/blob/master/CODE_OF_CONDUCT.md).

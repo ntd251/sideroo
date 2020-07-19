@@ -1,4 +1,4 @@
-module Sider
+module Sideroo
   class Enumerator
     attr_reader :type_klass
     attr_reader :limit
@@ -10,7 +10,7 @@ module Sider
     def initialize(type_klass:, filters:, limit: -1)
       @type_klass = type_klass
       @limit = limit
-      @redis_client = redis_client || Sider.redis_client
+      @redis_client = redis_client || Sideroo.redis_client
       @filters = stringify_keys(filters)
 
       @search_pattern = build_search_pattern

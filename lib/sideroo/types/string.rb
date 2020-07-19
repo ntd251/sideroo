@@ -1,4 +1,4 @@
-module Sider
+module Sideroo
   class String < Base
     redis_methods %w[
       append

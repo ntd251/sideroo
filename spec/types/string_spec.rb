@@ -1,5 +1,5 @@
-RSpec.describe Sider::String do
-  class MockedString < Sider::String
+RSpec.describe Sideroo::String do
+  class MockedString < Sideroo::String
     key_pattern 'name:{language}:{order}'
     description 'This is mocked string'
   end
@@ -32,7 +32,7 @@ RSpec.describe Sider::String do
       ]
 
       matched_keys.each do |key|
-        Sider.redis_client.set(key, 'john')
+        Sideroo.redis_client.set(key, 'john')
       end
 
       unmatched_keys = [
@@ -41,7 +41,7 @@ RSpec.describe Sider::String do
       ]
 
       unmatched_keys.each do |key|
-        Sider.redis_client.set(key, 'john')
+        Sideroo.redis_client.set(key, 'john')
       end
     end
 

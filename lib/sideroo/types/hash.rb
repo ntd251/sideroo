@@ -1,4 +1,4 @@
-module Sider
+module Sideroo
   class Hash < Base
     redis_methods %w[
       hdel

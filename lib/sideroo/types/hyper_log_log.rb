@@ -1,4 +1,4 @@
-module Sider
+module Sideroo
   class HyperLogLog < Base
     redis_methods %w[
       pfadd

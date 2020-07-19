@@ -28,7 +28,7 @@ advances
 * Public or private harassment
 * Publishing others' private information, such as a physical or electronic
   address, without explicit permission
-* Other conduct which could reasonably be considered inappropriate in a
+* Other conduct which could reasonably be considerooed inappropriate in a
   professional setting
 
 ## Our Responsibilities

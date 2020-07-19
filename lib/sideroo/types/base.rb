@@ -1,4 +1,4 @@
-module Sider
+module Sideroo
   class Base
     class << self
       def redis_methods(method_names)
@@ -42,13 +42,13 @@ module Sider
 
       def redis_client(*args)
         @redis_client = args.first if args.count > 0
-        @redis_client || Sider.redis_client
+        @redis_client || Sideroo.redis_client
       end
 
       ## SEARCH
       #
       def where(attr_map)
-        Sider::Enumerator.new(
+        Sideroo::Enumerator.new(
           type_klass: self,
           filters: attr_map,
         )

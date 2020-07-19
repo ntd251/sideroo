@@ -1,5 +1,5 @@
 require "bundler/setup"
-require "sider"
+require "sideroo"
 require "redis"
 require 'redis-namespace'
 
@@ -15,13 +15,13 @@ RSpec.configure do |config|
   end
 
   config.before(:all) do
-    Sider.configure do |c|
-      c.redis_client = Redis::Namespace.new('sider-specs', redis: Redis.new)
+    Sideroo.configure do |c|
+      c.redis_client = Redis::Namespace.new('sideroo-specs', redis: Redis.new)
     end
   end
 
   config.after(:each) do
-    Sider.redis_client.flushdb
+    Sideroo.redis_client.flushdb
   end
 end
 

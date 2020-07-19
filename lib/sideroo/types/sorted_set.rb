@@ -1,4 +1,4 @@
-module Sider
+module Sideroo
   class SortedSet < Base
     redis_methods %w[
       zadd
