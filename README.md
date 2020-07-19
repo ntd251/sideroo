@@ -9,6 +9,20 @@ This gem is aimed to provide
 
 while maintaining a **thin** abstraction on top of `redis` gem.
 
+```rb
+class TopStoriesCache < Sider::Set
+  key_pattern 'top_stories:{country}:{category}'
+  description 'Cache top stories by ID per country and category'
+  example 'top_stories:us:romance'
+end
+
+cache = TopStoriesCache.new(country: 'us', category: 'romance')
+
+cache.sadd(story_id)
+cache.smembers
+cache.sismember(member)
+```
+
 ## 2. Installation
 
 Add this line to your application's Gemfile:
@@ -201,7 +215,7 @@ end
 TopStoriesCache.where(country: 'sg').count
 ```
 
-### 3.4. Report & Generate documentation
+### 3.4. Report & Generate documentation - COMING SOON
 
 ```rb
 Sider.report
@@ -211,12 +225,18 @@ Sider.report
 TBD
 ```
 
-### 3.5 Audit keys
+### 3.5. Audit keys
 
 ```rb
 TopStoriesCache.count # Scan and count
 
-TopStoriesCache.all # NOT RECOMMENDED if there are too many keys
+TopStoriesCache.all.to_a # NOT RECOMMENDED if there are too many keys
+```
+
+### 3.6. Flush keys - COMING SOON
+
+```rb
+TopStoriesCache.flush # Delete all keys of TopStoriesCache
 ```
 
 ---
