@@ -115,6 +115,9 @@ top_stories:us:12
 
 ```rb
 TopStoriesCache.all # Not recommended for large db
+TopStoriesCache.all.to_a
+
+TopStoriesCache.where(country: 'sg').to_a
 
 # Loop through `top_stories:sg:*`
 TopStoriesCache.where(country: 'sg').each do |list|
@@ -159,11 +162,11 @@ All `key`-related Redis methods are supported by all below types.
 ### KEY-related methods
 
 ```rb
-class RedisRecord < Sider::List
+class AnyRecord < Sider::Base
   # ...
 end
 
-record = RedisRecord.new
+record = AnyRecord.new(...)
 
 record.del
 record.dump
@@ -188,23 +191,29 @@ record.unlink
 Support all KEY-related methods and its own methods.
 
 ```rb
-record.append(value)
-record.decr
-record.decrby(value) # number
-record.get
-record.getbit(offset)
-record.getrange(start, stop)
-record.getset(value)
-record.incr
-record.incrby(value)
-record.incrbyfloat(value)
-record.psetex(ttl, value)
-record.set(value)
-record.setbit(offset, value)
-record.setex(ttl, value)
-record.setnx(value)
-record.setrange(offset, value)
-record.strlen
+class MyStringCache < Sider::String
+  # ...
+end
+
+string = MyStringCache.new(...)
+
+string.append(value)
+string.decr
+string.decrby(value) # number
+string.get
+string.getbit(offset)
+string.getrange(start, stop)
+string.getset(value)
+string.incr
+string.incrby(value)
+string.incrbyfloat(value)
+string.psetex(ttl, value)
+string.set(value)
+string.setbit(offset, value)
+string.setex(ttl, value)
+string.setnx(value)
+string.setrange(offset, value)
+string.strlen
 ```
 
 ### 4.2. `Sider::Hash`
@@ -212,23 +221,29 @@ record.strlen
 Support all KEY-related methods and its own methods.
 
 ```rb
-record.hdel(*fields)
-record.hexists(field)
-record.hget(field)
-record.hgetall
-record.hincrby(field, increment)
-record.hincrbyfloat(field, increment)
-record.hkeys
-record.hlen
-record.hmget(*fields, &blk)
-record.hmset(*attrs)
-record.hscan(cursor, options = {})
-record.hscan_each(options = {}, &block)
-record.hset(field, value)
-record.hsetnx(field, value)
-record.hvals
-record.mapped_hmget(*field)
-record.mapped_hmset(hash)
+class MyHash < Sider::Hash
+  # ...
+end
+
+hash = MyHash.new(...)
+
+hash.hdel(*fields)
+hash.hexists(field)
+hash.hget(field)
+hash.hgetall
+hash.hincrby(field, increment)
+hash.hincrbyfloat(field, increment)
+hash.hkeys
+hash.hlen
+hash.hmget(*fields, &blk)
+hash.hmset(*attrs)
+hash.hscan(cursor, options = {})
+hash.hscan_each(options = {}, &block)
+hash.hset(field, value)
+hash.hsetnx(field, value)
+hash.hvals
+hash.mapped_hmget(*field)
+hash.mapped_hmset(hash)
 ```
 
 ### 4.3. `Sider::List`
@@ -236,23 +251,29 @@ record.mapped_hmset(hash)
 Support all KEY-related methods and its own methods.
 
 ```rb
-record.blpop(timeout:)
-record.brpop(timeout:)
-record.brpoplpush(destination, options = {})
-record.lindex(index) # => String
-record.linsert(where, pivot, value) # => Fixnum
-record.llen # => Fixnum
-record.lpop # => String
-record.lpush(value) # => Fixnum
-record.lpushx(value) # => Fixnum
-record.lrange(start, stop) # => Array<String>
-record.lrem(count, value) # => Fixnum
-record.lset(index, value) # => String
-record.ltrim(start, stop) # => String
-record.rpop # => String
-record.rpoplpush(source, destination) # => nil, String
-record.rpush(value) # => Fixnum
-record.rpushx(value) # => Fixnum
+class MyList < Sider::List
+  # ...
+end
+
+list = MyList.new(...)
+
+list.blpop(timeout:)
+list.brpop(timeout:)
+list.brpoplpush(destination, options = {})
+list.lindex(index) # => String
+list.linsert(where, pivot, value) # => Fixnum
+list.llen # => Fixnum
+list.lpop # => String
+list.lpush(value) # => Fixnum
+list.lpushx(value) # => Fixnum
+list.lrange(start, stop) # => Array<String>
+list.lrem(count, value) # => Fixnum
+list.lset(index, value) # => String
+list.ltrim(start, stop) # => String
+list.rpop # => String
+list.rpoplpush(source, destination) # => nil, String
+list.rpush(value) # => Fixnum
+list.rpushx(value) # => Fixnum
 ```
 
 ### 4.4. `Sider::Set`
@@ -260,25 +281,31 @@ record.rpushx(value) # => Fixnum
 Support all KEY-related methods and its own methods.
 
 ```rb
-record.sadd(member) # => Boolean, Fixnum
-record.scard
-record.sdiff(*other_keys)
-record.sinter(*other_keys)
-record.sismember(member)
-record.smembers
-record.smove(destination, member)
-record.spop(count = nil)
-record.srandmember(count = nil)
-record.srem(member)
-record.sscan(cursor, options = {}) # => String+
-record.sscan_each(options = {}, &block) # => Enumerator
-record.sunion(*other_keys)
-record.sdiffstore(destination, *other_keys)
-record.sdiffstore!(*other_keys)
-record.sinterstore(destination, *other_keys)
-record.sinterstore!(*other_keys)
-record.sunionstore(destination, *other_keys)
-record.sunionstore!(*other_keys)
+class SiteSet < Sider::Set
+  # ...
+end
+
+set = SiteSet.new(...)
+
+set.sadd(member) # => Boolean, Fixnum
+set.scard
+set.sdiff(*other_keys)
+set.sinter(*other_keys)
+set.sismember(member)
+set.smembers
+set.smove(destination, member)
+set.spop(count = nil)
+set.srandmember(count = nil)
+set.srem(member)
+set.sscan(cursor, options = {}) # => String+
+set.sscan_each(options = {}, &block) # => Enumerator
+set.sunion(*other_keys)
+set.sdiffstore(destination, *other_keys)
+set.sdiffstore!(*other_keys)
+set.sinterstore(destination, *other_keys)
+set.sinterstore!(*other_keys)
+set.sunionstore(destination, *other_keys)
+set.sunionstore!(*other_keys)
 ```
 
 ### 4.5. `Sider::SortedSet`
@@ -286,31 +313,37 @@ record.sunionstore!(*other_keys)
 Support all KEY-related methods and its own methods.
 
 ```rb
-record.zadd(*args) # => Boolean, ...
-record.zcard # => Fixnum
-record.zcount(min, max) # => Fixnum
-record.zincrby(increment, member) # => Float
-record.zlexcount(min, max) # => Fixnum
-record.zpopmax(count = nil) # => Array<String, Float>+
-record.zpopmin(count = nil) # => Array<String, Float>+
-record.zrange(start, stop, options = {}) # => Array<String>, Arra
-record.zrangebylex(min, max, options = {}) # => Array<String>, Arra
-record.zrangebyscore(min, max, options = {}) # => Array<String>, Arra
-record.zrank(member) # => Fixnum
-record.zrem(member) # => Boolean, Fixnum
-record.zremrangebyrank(start, stop) # => Fixnum
-record.zremrangebyscore(min, max) # => Fixnum
-record.zrevrange(start, stop, options = {}) # => Object
-record.zrevrangebylex(max, min, options = {}) # => Object
-record.zrevrangebyscore(max, min, options = {}) # => Object
-record.zrevrank(member) # => Fixnum
-record.zscan(cursor, options = {}) # => String, Arra
-record.zscan_each(options = {}, &block) # => Enumerator
-record.zscore(member) # => Float
-record.zinterstore(destination, *other_keys)
-record.zinterstore!(*other_keys)
-record.zunionstore(destination, *other_keys)
-record.zunionstore!(*other_keys)
+class MySortedSet < Sider::SortedSet
+  # ...
+end
+
+sorted_set = MySortedSet.new(...)
+
+sorted_set.zadd(*args) # => Boolean, ...
+sorted_set.zcard # => Fixnum
+sorted_set.zcount(min, max) # => Fixnum
+sorted_set.zincrby(increment, member) # => Float
+sorted_set.zlexcount(min, max) # => Fixnum
+sorted_set.zpopmax(count = nil) # => Array<String, Float>+
+sorted_set.zpopmin(count = nil) # => Array<String, Float>+
+sorted_set.zrange(start, stop, options = {}) # => Array<String>, Arra
+sorted_set.zrangebylex(min, max, options = {}) # => Array<String>, Arra
+sorted_set.zrangebyscore(min, max, options = {}) # => Array<String>, Arra
+sorted_set.zrank(member) # => Fixnum
+sorted_set.zrem(member) # => Boolean, Fixnum
+sorted_set.zremrangebyrank(start, stop) # => Fixnum
+sorted_set.zremrangebyscore(min, max) # => Fixnum
+sorted_set.zrevrange(start, stop, options = {}) # => Object
+sorted_set.zrevrangebylex(max, min, options = {}) # => Object
+sorted_set.zrevrangebyscore(max, min, options = {}) # => Object
+sorted_set.zrevrank(member) # => Fixnum
+sorted_set.zscan(cursor, options = {}) # => String, Arra
+sorted_set.zscan_each(options = {}, &block) # => Enumerator
+sorted_set.zscore(member) # => Float
+sorted_set.zinterstore(destination, *other_keys)
+sorted_set.zinterstore!(*other_keys)
+sorted_set.zunionstore(destination, *other_keys)
+sorted_set.zunionstore!(*other_keys)
 ```
 
 ### 4.6. `Sider::Bitmap`
@@ -318,8 +351,14 @@ record.zunionstore!(*other_keys)
 Support all KEY-related methods and its own methods.
 
 ```rb
-record.getbit(offset)
-record.setbit(offset, value)
+class MyBitmap < Sider::Bitmap
+  # ...
+end
+
+bitmap = MyBitmap.new(...)
+
+bitmap.getbit(offset)
+bitmap.setbit(offset, value)
 ```
 
 ### 4.7. `Sider::HyperLogLog`
@@ -327,10 +366,16 @@ record.setbit(offset, value)
 Support all KEY-related methods and its own methods.
 
 ```rb
-record.pfadd(member)
-record.pfcount
-record.pfmerge(destination, *other_keys)
-record.pfmerge!(*other_keys)
+class MyHLL < Sider::HyperLogLog
+  # ...
+end
+
+hll = MyHLL.new(...)
+
+hll.pfadd(member)
+hll.pfcount
+hll.pfmerge(destination, *other_keys)
+hll.pfmerge!(*other_keys)
 ```
 
 ---
@@ -374,25 +419,52 @@ class UserStoriesCache < Sider::Set
   example 'users:12345'
   description 'Top stories per users'
 end
-
-
 ```
 
-## 6. Development
+## 6. Redis Clients
+
+Redis clients can be customized at 3 levels
+
+### 6.1. Global `Sider` config
+
+```rb
+Sider.configure do |c|
+  c.redis_client = ...
+end
+```
+
+### 6.2. Class level config
+
+```rb
+class UserStoriesCache < Sider::Set
+  # ...
+  redis_client custom_redis_client
+end
+```
+
+### 6.3. Instance level config
+
+```rb
+cache = UserStoriesCache.new(...)
+cache.user(instance_redis_client)
+```
+
+
+## 7. Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
 To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 
-## 7. Contributing
+## 8. Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/sider. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/[USERNAME]/sider/blob/master/CODE_OF_CONDUCT.md).
 
 
-## 8. License
+## 9. License
 
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
 
-## 9. Code of Conduct
+## 10. Code of Conduct
 
 Everyone interacting in the Sider project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/sider/blob/master/CODE_OF_CONDUCT.md).
