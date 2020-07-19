@@ -3,25 +3,45 @@
 ## 1. Motivations
 
 This gem is aimed to provide
-- a **declarative** and **auditable** approach when working with Redis
-- **self-generated documentation** for your Redis usages
+- a **declarative** Redis key definition
+  ```rb
+  class TopStoriesCache < Sider::Set
+    key_pattern 'top_stories:{country}:{category}'
+    description 'Cache top stories by ID per country and category'
+    example 'top_stories:us:romance'
+    key_regex /^top_stories\:(\w{2})\:([^\:]+)$/ # OPTIONAL - read docs below
+  end
+  ```
+- an **intuitive** Redis key initialization
+  ```rb
+  cache = TopStoriesCache.new(country: 'us', category: 'romance')
+  # instead of repeating key = "top_stories:#{country}:#{category}"
+  ```
 - **object-oriented** methods for each Redis data type
+  ```rb
+  # Redis Set methods
+  cache.sadd(story_id) # instead of redis.sadd(key, story_id)
+  cache.smembers # instead of redis.smembers(key)
+  cache.sismember(member) # instead of redis.sismember(key, member)
+  ```
+- an **auditable** Redis key management
+  ```rb
+  TopStoriesCache.count # key count - COMING SOON
+  TopStoriesCache.all.map(&:key) # list all keys
+  TopStoriesCache.flush # delete all keys of the same pattern - COMING SOON
 
-while maintaining a **thin** abstraction on top of `redis` gem.
+  # Support `where` for key searching
+  # `each`, `map` for enumerable
+  TopStoriesCache.where(category: 'romance').each do |set|
+    # ...
+  end
+  ```
+- Potential **self-generated documentation** for Redis usage
+  ```rb
+  Sider.report # COMING SOON
+  ```
 
-```rb
-class TopStoriesCache < Sider::Set
-  key_pattern 'top_stories:{country}:{category}'
-  description 'Cache top stories by ID per country and category'
-  example 'top_stories:us:romance'
-end
-
-cache = TopStoriesCache.new(country: 'us', category: 'romance')
-
-cache.sadd(story_id)
-cache.smembers
-cache.sismember(member)
-```
+All of these are done while maintaining a **thin** abstraction on top of `redis` gem.
 
 ## 2. Installation
 
