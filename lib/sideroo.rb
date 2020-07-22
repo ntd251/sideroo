@@ -13,6 +13,10 @@ module Sideroo
   class Error < StandardError; end
   class MissingKeys < ArgumentError; end
   class UnexpectedKeys < ArgumentError; end
+  class InvalidExample < StandardError; end
+  class InvalidKeyRegex < StandardError; end
+  class OutOfOrderConfig < StandardError; end
+  class PatternAlreadyDeclared < StandardError; end
 
   class Configuration
     attr_accessor :redis_client
