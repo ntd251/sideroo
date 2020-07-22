@@ -132,6 +132,21 @@ RSpec.describe Sideroo::Base do
           }.to raise_error(Sideroo::OutOfOrderConfig)
         end
       end
+
+      context 'when regex does not match pattern' do
+        it 'raises error' do
+          expect {
+            class InvalidRegexKlass < Sideroo::Base
+              key_pattern 'name:{language}:{order}'
+
+              # missing captures
+              # correct key_regex is /^name\:(\w+)\:(\d+)$/
+              key_regex /^name\:(\w+)\:\d+$/
+              example 'name:en:1000'
+            end
+          }.to raise_error(Sideroo::InvalidKeyRegex)
+        end
+      end
     end
   end
 end

@@ -30,12 +30,13 @@ module Sideroo
         @key_regex || default_key_regex
       end
 
-      ## METADATA
+      # Provide example to test against key_pattern and key_regex.
+      # Strongly recommended. Please watch out for edge cases.
       #
       def example(*args)
         if args.count > 0
           @example = args.first
-          validate_example!
+          validate_example_and_regex!
         end
         @example
       end
@@ -118,11 +119,23 @@ module Sideroo
         raise Sideroo::OutOfOrderConfig, message
       end
 
-      def validate_example!
-        example_valid = example.nil? || example =~ key_regex
-        return if example_valid
-        message = "Example does not match key regex: #{key_regex}"
-        raise Sideroo::InvalidExample, message
+      # Validate if the provided example matches key regex
+      #
+      def validate_example_and_regex!
+        return if example.nil?
+        example_valid = example =~ key_regex
+
+        unless example_valid
+          message = "Example does not match key regex: #{key_regex}"
+          raise Sideroo::InvalidExample, message
+        end
+
+        values = example.scan(key_regex).first
+
+        if values.count != dimensions.count
+          message = "Expected #{dimensions.count} dimensions, got #{values.count}"
+          raise Sideroo::InvalidKeyRegex, message
+        end
       end
     end
 
