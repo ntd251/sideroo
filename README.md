@@ -15,11 +15,16 @@ This gem is aimed to provide
     example 'top_stories:us:romance'
     key_regex /^top_stories\:(\w{2})\:([^\:]+)$/ # OPTIONAL - read docs below
   end
+
+  TopStoriesCache.dimensions # ['country', 'category']
   ```
-- an **intuitive** Redis key initialization
+- an **intuitive** Redis key initialization & `attr_accessor`
   ```rb
   cache = TopStoriesCache.new(country: 'us', category: 'romance')
   # instead of repeating key = "top_stories:#{country}:#{category}"
+
+  cache.country # us
+  cache.genre # romance
   ```
 - **object-oriented** methods for each Redis data type
   ```rb
@@ -566,22 +571,42 @@ cache = UserStoriesCache.new(...)
 cache.use_client(instance_redis_client)
 ```
 
+## 7. Advanced usages
 
-## 7. Development
+### 7.1. Dimension validations
+
+To keep this gem thin, we have decided not to add explicit support for dimension validation.
+
+However, `Sideroo` collaborates perfectly with `ActiveModel::Validations`. Please incorporate at your own needs.
+
+```rb
+class TopStoriesCache < Sideroo::Set
+  include ActiveModel::Validations
+
+  key_pattern 'top_stories:{country}:{category}'
+  description 'Cache top stories by ID per country and category'
+  example 'top_stories:us:romance'
+
+  validates :country, length: 2
+  validates :category, regex: /^[^:]+$/
+end
+```
+
+## 8. Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
 To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 
-## 8. Contributing
+## 9. Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/sideroo. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/[USERNAME]/sideroo/blob/master/CODE_OF_CONDUCT.md).
 
 
-## 9. License
+## 10. License
 
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
 
-## 10. Code of Conduct
+## 11. Code of Conduct
 
 Everyone interacting in the Sideroo project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/sideroo/blob/master/CODE_OF_CONDUCT.md).

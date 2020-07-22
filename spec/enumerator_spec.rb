@@ -8,7 +8,7 @@ RSpec.describe Sideroo::Enumerator do
   let(:record_klass_with_custom_regex) do
     Class.new(Sideroo::String) do
       key_pattern 'name:{language}:{order}'
-      key_regex /^name\:[^:]+\:[^:]+$/
+      key_regex /^name\:([^:]+)\:([^:]+)$/
     end
   end
 
