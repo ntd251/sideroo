@@ -1,6 +1,5 @@
 require "sideroo/version"
 require "sideroo/enumerator"
-require "sideroo/key_builder"
 require "sideroo/types/base"
 require "sideroo/types/bitmap"
 require "sideroo/types/hash"
