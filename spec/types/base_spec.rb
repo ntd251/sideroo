@@ -68,4 +68,70 @@ RSpec.describe Sideroo::Base do
       end
     end
   end
+
+  describe '.dimensions' do
+    subject { MockedString.dimensions }
+
+    it 'returns the correct dimensions' do
+      expect(subject).to eq ['language', 'order']
+    end
+  end
+
+  describe 'dimensions as attr_accessor' do
+    it 'can read dimensions' do
+      expect(cache.language).to eq 'en'
+      expect(cache.order).to eq 10
+    end
+
+    it 'can set dimensions' do
+      expect { cache.language = 'ja' }
+        .to change { cache.language }
+        .from('en')
+        .to('ja')
+
+      expect { cache.order = 20 }
+        .to change { cache.order }
+        .from(10)
+        .to(20)
+    end
+  end
+
+  describe '.example' do
+    describe 'key regex validation' do
+      context 'when example does not match default key regex' do
+        it 'raises error' do
+          expect {
+            class InvalidExampleDefaultKlass < Sideroo::Base
+              key_pattern 'name:{language}:{order}'
+              example 'my_name:en:1000'
+            end
+          }.to raise_error(Sideroo::InvalidExample)
+        end
+      end
+
+      context 'when example does not match default key regex' do
+        it 'raises error' do
+          expect {
+            class InvalidExampleCustomKlass < Sideroo::Base
+              key_pattern 'name:{language}:{order}'
+              key_regex /^name\:(\w+)\:(\d+)$/
+              example 'name:en:1000:edge_case'
+            end
+          }.to raise_error(Sideroo::InvalidExample)
+        end
+      end
+
+      context 'when example is defined before custom regex' do
+        it 'raises error' do
+          expect {
+            class ExampleOrderKlass < Sideroo::Base
+              key_pattern 'name:{language}:{order}'
+              example 'name:en:1000:edge_case'
+              key_regex /^name\:(\w+)\:(\d+)$/
+            end
+          }.to raise_error(Sideroo::OutOfOrderConfig)
+        end
+      end
+    end
+  end
 end
