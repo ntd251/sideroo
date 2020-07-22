@@ -37,8 +37,11 @@ module Sideroo
       end
 
       def key_attributes
-        KeyBuilder.key_attributes(key_pattern)
+        regex = /\{([^\{\}]+)\}/
+        key_pattern.scan(regex).map(&:first)
       end
+
+      alias_method :dimensions, :key_attributes
 
       def redis_client(*args)
         @redis_client = args.first if args.count > 0
@@ -140,6 +143,30 @@ module Sideroo
 
     def redis_client
       @redis_client || self.class.redis_client
+    end
+
+    private
+
+    def key_pattern
+      self.class.key_pattern
+    end
+
+    def validate_attrs!(attr_map)
+      provided_attrs = attr_map.keys.map(&:to_s)
+      key_attributes = self.class.key_attributes(key_pattern)
+
+      missing_attrs = key_attributes - provided_attrs
+      unexpected_attrs = provided_attrs - key_attributes
+
+      if missing_attrs.any?
+        msg = "Missing attributes: #{missing_attrs.join(', ')}"
+        raise MissingKeys, msg
+      end
+
+      if unexpected_attrs.any?
+        msg = "Unexpected attributes: #{unexpected_attrs.join(', ')}"
+        raise UnexpectedKeys, msg
+      end
     end
   end
 end
