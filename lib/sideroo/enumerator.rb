@@ -1,5 +1,7 @@
 module Sideroo
   class Enumerator
+    include Enumerable
+
     attr_reader :type_klass
     attr_reader :limit
     attr_reader :redis_client
@@ -42,14 +44,6 @@ module Sideroo
           yield(key)
         end
       end
-    end
-
-    def map
-      output = []
-      each do |obj|
-        output.push yield(obj)
-      end
-      output
     end
 
     def count
